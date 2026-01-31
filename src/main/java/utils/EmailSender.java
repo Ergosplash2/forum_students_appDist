@@ -5,22 +5,20 @@ import jakarta.mail.internet.*;
 import java.util.Properties;
 
 /**
- * Email Sender - Sends verification emails using JavaMail API
- * Uses Gmail SMTP (free)
+ * Email Sender - Sends verification emails using Ethereal.email (testing)
  */
 public class EmailSender {
     
-    // Gmail SMTP Configuration
-    private static final String SMTP_HOST = "smtp.gmail.com";
+    // Ethereal.email SMTP Configuration
+    private static final String SMTP_HOST = "smtp.ethereal.email";
     private static final String SMTP_PORT = "587";
+    private static final String SMTP_USERNAME = "katrina.abernathy45@ethereal.email"; // Your Ethereal username
+    private static final String SMTP_PASSWORD = "password-here"; // Your Ethereal password
     
-    // TODO: Replace with your Gmail credentials
-    // For Gmail: Enable "Less secure app access" or use App Password
-    // Guide: https://support.google.com/accounts/answer/185833
-    private static final String FROM_EMAIL = "studentforum.noreply@gmail.com";
-    private static final String FROM_PASSWORD = "EMAIL_PASSWORD_HERE";
+    // From email address (can be anything with Ethereal)
+    private static final String FROM_EMAIL = "noreply@studentforum.com";
     
-    // Your application URL (change in production)
+    // Your application URL
     private static final String APP_URL = "http://localhost:9090/SIR";
     
     /**
@@ -40,11 +38,12 @@ public class EmailSender {
             props.put("mail.smtp.host", SMTP_HOST);
             props.put("mail.smtp.port", SMTP_PORT);
             
-            // Create session with authentication
+            // Create session with Ethereal authentication
             Session session = Session.getInstance(props, new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(FROM_EMAIL, FROM_PASSWORD);
+                    // USE ETHEREAL CREDENTIALS, NOT GMAIL!
+                    return new PasswordAuthentication(SMTP_USERNAME, SMTP_PASSWORD);
                 }
             });
             
@@ -64,11 +63,15 @@ public class EmailSender {
             // Send email
             Transport.send(message);
             
-            System.out.println("Verification email sent to: " + toEmail);
+            System.out.println("✅ Verification email sent to: " + toEmail);
+            System.out.println("📧 Ethereal Inbox: https://ethereal.email/login");
+            System.out.println("👤 Username: " + SMTP_USERNAME);
+            System.out.println("🔑 Password: " + SMTP_PASSWORD);
+            
             return true;
             
         } catch (MessagingException e) {
-            System.err.println("Failed to send verification email: " + e.getMessage());
+            System.err.println("❌ Failed to send verification email: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -78,7 +81,7 @@ public class EmailSender {
      * Build HTML email content
      */
     private static String buildEmailHTML(String username, String verificationUrl) {
-    	System.out.println("BUILD EMAIL HTML VERSION 2026-01-06");
+        System.out.println("BUILD EMAIL HTML VERSION 2026-01-06");
 
         return """
             <!DOCTYPE html>

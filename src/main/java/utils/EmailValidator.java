@@ -17,7 +17,7 @@ public class EmailValidator {
     // FREE API - No key needed for basic validation
     // For production, get free API key from: https://www.abstractapi.com/api/email-verification-validation-api
     private static final String API_URL = "https://emailvalidation.abstractapi.com/v1/";
-    private static final String API_KEY = "KEY-HERE"; // Get free key or use fallback
+    private static final String API_KEY = "key-here"; // Get free key or use fallback
     
     /**
      * Validates email using external API
@@ -59,13 +59,23 @@ public class EmailValidator {
                 // Parse JSON response
                 JsonObject jsonResponse = JsonParser.parseString(response.toString()).getAsJsonObject();
                 
-                boolean isValid = jsonResponse.has("is_valid_format") && 
-                                 jsonResponse.get("is_valid_format").getAsJsonObject()
-                                            .get("value").getAsBoolean();
+                boolean isValid = false;
+                if (jsonResponse.has("is_valid_format")) {
+                    JsonObject formatObj = jsonResponse.getAsJsonObject("is_valid_format");
+                    if (formatObj != null && formatObj.has("value")) {
+                        isValid = formatObj.get("value").getAsBoolean();
+                    }
+                }
+
                 
-                boolean isDisposable = jsonResponse.has("is_disposable_email") &&
-                                      jsonResponse.get("is_disposable_email").getAsJsonObject()
-                                                 .get("value").getAsBoolean();
+                boolean isDisposable = false;
+                if (jsonResponse.has("is_disposable_email")) {
+                    JsonObject dispObj = jsonResponse.getAsJsonObject("is_disposable_email");
+                    if (dispObj != null && dispObj.has("value")) {
+                        isDisposable = dispObj.get("value").getAsBoolean();
+                    }
+                }
+
                 
                 if (isDisposable) {
                     return new ValidationResult(false, "Disposable email addresses are not allowed", null);

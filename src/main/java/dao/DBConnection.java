@@ -11,7 +11,7 @@ public class DBConnection {
     				  + "&serverTimezone=UTC"
     				  + "&allowPublicKeyRetrieval=true";
     private static final String USER = "root";
-    private static final String PASSWORD = "PASSWORD_HERE"; // under mysql80 we have a password
+    private static final String PASSWORD = "password"; // under mysql80 we have a password
 
     public static Connection getConnection() {
         try {
