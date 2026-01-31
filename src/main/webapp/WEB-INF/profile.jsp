@@ -182,6 +182,40 @@
             </div>
         </c:if>
         
+        <c:if test="${not empty param.warning}">
+    <div style="background-color: #fff3cd; color: #856404; padding: 12px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #ffc107;">
+        ⚠️ ${param.warning}
+    </div>
+</c:if>
+
+<c:if test="${not user.emailVerified}">
+    <div style="background-color: #e8f4fd; border: 1px solid #b6d4fe; border-radius: 4px; padding: 20px; margin-bottom: 30px;">
+        <h3 style="color: #0c63e4; margin-top: 0;">📧 Email Verification Required</h3>
+        <p style="color: #084298; margin-bottom: 10px;">
+            <strong>Your email is not verified.</strong> Please check your inbox for the verification link.
+        </p>
+        <div style="background-color: white; padding: 15px; border-radius: 4px; margin: 15px 0;">
+            <p style="margin: 0 0 10px 0; font-weight: bold;">Without verification, you cannot:</p>
+            <ul style="margin: 0; padding-left: 20px;">
+                <li>Create new posts</li>
+                <li>Comment on discussions</li>
+            </ul>
+            <p style="margin: 10px 0 0 0; font-weight: bold;">You can still:</p>
+            <ul style="margin: 0; padding-left: 20px;">
+                <li>Search and browse posts</li>
+                <li>Update your profile</li>
+                <li>View all content</li>
+            </ul>
+        </div>
+        <p style="margin: 15px 0 0 0;">
+    <a href="resendVerification" 
+       style="background-color: #0d6efd; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">
+        Resend Verification Email
+    </a>
+</p>
+    </div>
+</c:if>
+        
         <!-- Account Information (Read-only) -->
         <div class="readonly-section">
             <h2 class="section-title">Account Information</h2>
@@ -312,6 +346,30 @@
             const birthdateInput = document.getElementById('birthdate');
             const today = new Date().toISOString().split('T')[0];
             birthdateInput.setAttribute('max', today);
+            
+         // Check for success/error messages in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            if (urlParams.has('success') || urlParams.has('error') || urlParams.has('warning')) {
+                // Messages are already shown by the server-side code
+                // Scroll to top to see messages
+                window.scrollTo(0, 0);
+            }
+            
+            // Optional: Add AJAX for resend verification (if you want to avoid page reload)
+            const resendLink = document.querySelector('a[href="resendVerification"]');
+            if (resendLink) {
+                resendLink.addEventListener('click', function(e) {
+                    // Optional: Show loading state
+                    const originalText = this.textContent;
+                    this.textContent = 'Sending...';
+                    this.style.opacity = '0.7';
+                    
+                    // The link will still work normally, but we could use AJAX here
+                    // For now, let it work normally
+                });
+            }
+            
         });
     </script>
 </body>

@@ -174,14 +174,46 @@
 </head>
 <body>
     <div class="container">
+    
+    <!-- Add this message section -->
+    <c:if test="${not empty param.success}">
+        <div style="background-color: #d4edda; color: #155724; padding: 12px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #c3e6cb;">
+            ✅ ${param.success}
+        </div>
+    </c:if>
+    
+    <c:if test="${not empty param.error}">
+        <div style="background-color: #f8d7da; color: #721c24; padding: 12px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #f5c6cb;">
+            ❌ ${param.error}
+        </div>
+    </c:if>
+    
+    <c:if test="${not empty param.warning}">
+        <div style="background-color: #fff3cd; color: #856404; padding: 12px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #ffeaa7;">
+            ⚠️ ${param.warning}
+        </div>
+    </c:if>
+    
+    
         <div class="header">
             <h1>📚 Student Forum</h1>
             <div class="user-info">
-                <span>Welcome, <a href="profile" class="profile-link">${sessionScope.user.username}</a>!</span>
-                <a href="search" class="search-btn">🔍 Search</a>
-                <a href="addPost" class="new-post-btn">+ New Post</a>
-                <a href="logout" class="logout-btn">Logout</a>
-            </div>
+    <span>Welcome, <a href="profile" class="profile-link">${sessionScope.user.username}</a>!</span>
+    <a href="search" class="search-btn">🔍 Search</a>
+    
+    <c:choose>
+        <c:when test="${sessionScope.user.emailVerified}">
+            <a href="addPost" class="new-post-btn">+ New Post</a>
+        </c:when>
+        <c:otherwise>
+            <span class="verification-warning" style="color: #f39c12; font-weight: bold; padding: 5px 10px; background: #fff3cd; border-radius: 4px;">
+                ⚠️ Verify to Post
+            </span>
+        </c:otherwise>
+    </c:choose>
+    
+    <a href="logout" class="logout-btn">Logout</a>
+</div>
         </div>
         
         <h2>Recent Posts</h2>

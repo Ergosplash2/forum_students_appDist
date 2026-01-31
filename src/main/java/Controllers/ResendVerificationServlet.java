@@ -15,34 +15,27 @@ public class ResendVerificationServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String username = request.getParameter("username");
-        
-        if (username == null || username.trim().isEmpty()) {
-            response.sendRedirect("login?error=Username is required");
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect("login");
             return;
         }
         
-        UserDAO userDAO = new UserDAO();
-        
-        // Get user by username (need to create this method or use existing)
-        // For now, we'll assume user provides email
-        String email = request.getParameter("email");
-        
-        if (email == null || email.trim().isEmpty()) {
-            // Show form to enter email
-            request.setAttribute("username", username);
-            request.getRequestDispatcher("/WEB-INF/resendVerification.jsp")
-                   .forward(request, response);
-            return;
-        }
+        User user = (User) session.getAttribute("user");
         
         // Check if already verified
-        if (userDAO.isEmailVerified(email)) {
-            response.sendRedirect("login?success=Your email is already verified! You can login now.");
+        if (user.isEmailVerified()) {
+            response.sendRedirect("posts?success=Your email is already verified!");
             return;
         }
         
+        // Get user's email from session
+        String email = user.getEmail();
+        String username = user.getUsername();
+        
         // Generate new token
+        UserDAO userDAO = new UserDAO();
         String newToken = userDAO.regenerateVerificationToken(email);
         
         if (newToken != null) {
@@ -50,12 +43,13 @@ public class ResendVerificationServlet extends HttpServlet {
             boolean sent = EmailSender.sendVerificationEmail(email, username, newToken);
             
             if (sent) {
-                response.sendRedirect("login?success=Verification email sent! Please check your inbox.");
+                // Success - show message on current page
+                response.sendRedirect("posts?success=Verification email sent! Please check your inbox.");
             } else {
-                response.sendRedirect("login?error=Failed to send verification email. Please try again later.");
+                response.sendRedirect("posts?error=Failed to send verification email. Please try again later.");
             }
         } else {
-            response.sendRedirect("login?error=Unable to resend verification email. Please contact support.");
+            response.sendRedirect("posts?error=Unable to resend verification email. Please contact support.");
         }
     }
 }

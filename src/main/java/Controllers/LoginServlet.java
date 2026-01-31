@@ -51,9 +51,38 @@ public class LoginServlet extends HttpServlet {
         
         UserDAO userDAO = new UserDAO();
         User user = userDAO.login(username, password);
-        
+
         if (user != null) {
-            // Create session
+            // Check if email is verified
+            if (!user.isEmailVerified()) {
+                // User is not verified - allow login but show warning
+                HttpSession session = request.getSession();
+                session.setAttribute("user", user);
+                session.setAttribute("username", user.getUsername());
+                session.setAttribute("userId", user.getId());
+                
+                // Handle Remember Me (your existing code)
+                if ("on".equals(rememberMe)) {
+                    // Create cookie to remember username for 30 days
+                    Cookie rememberCookie = new Cookie("rememberedUser", username);
+                    rememberCookie.setMaxAge(30 * 24 * 60 * 60); // 30 days in seconds
+                    rememberCookie.setPath("/");
+                    rememberCookie.setHttpOnly(true); // Security: prevent JavaScript access
+                    response.addCookie(rememberCookie);
+                } else {
+                    // Remove remember cookie if exists
+                    Cookie rememberCookie = new Cookie("rememberedUser", "");
+                    rememberCookie.setMaxAge(0); // Delete cookie
+                    rememberCookie.setPath("/");
+                    response.addCookie(rememberCookie);
+                }
+                
+             // Redirect to posts page with verification reminder
+                response.sendRedirect("posts?warning=Please verify your email to create posts and comments");
+                return;
+            }
+            
+            // Create session (for verified users)
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
             session.setAttribute("username", user.getUsername());

@@ -241,14 +241,29 @@
                 </c:otherwise>
             </c:choose>
             
-            <div class="add-comment-form">
-                <h3>Add a Comment</h3>
-                <form method="post" action="addComment">
-                    <input type="hidden" name="postId" value="${post.id}">
-                    <textarea name="content" placeholder="Write your comment here..." required></textarea>
-                    <button type="submit" class="submit-btn">Post Comment</button>
-                </form>
-            </div>
+            <c:choose>
+    <c:when test="${sessionScope.user.emailVerified}">
+        <div class="add-comment-form">
+            <h3>Add a Comment</h3>
+            <form method="post" action="addComment">
+                <input type="hidden" name="postId" value="${post.id}">
+                <textarea name="content" placeholder="Write your comment here..." required></textarea>
+                <button type="submit" class="submit-btn">Post Comment</button>
+            </form>
+        </div>
+    </c:when>
+    <c:otherwise>
+        <div class="add-comment-form" style="background-color: #fff3cd; border: 1px solid #ffc107;">
+            <h3 style="color: #856404; margin-top: 0;">⚠️ Verification Required</h3>
+            <p style="color: #856404; margin-bottom: 10px;">
+                Please verify your email to add comments.
+            </p>
+            <a href="profile" style="color: #856404; text-decoration: underline; font-weight: bold;">
+                Go to Profile to Resend Verification
+            </a>
+        </div>
+    </c:otherwise>
+</c:choose>
         </div>
     </div>
 </body>

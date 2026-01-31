@@ -127,8 +127,6 @@ public class EmailSender {
                         <ul>
                             <li>📝 Create and reply to posts</li>
                             <li>💬 Comment on discussions</li>
-                            <li>🔍 Search and filter content</li>
-                            <li>👤 Customize your profile</li>
                         </ul>
                         
                         <p>If you have any questions, feel free to contact our support team.</p>

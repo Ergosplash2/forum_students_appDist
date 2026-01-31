@@ -21,8 +21,16 @@ public class CommentServlet extends HttpServlet {
         }
         
         model.User user = (model.User) session.getAttribute("user");
+        
+        
         String content = request.getParameter("content");
         String postIdStr = request.getParameter("postId");
+        
+     // ADD THIS CHECK
+        if (!user.isEmailVerified()) {
+            response.sendRedirect("viewPost?id=" + postIdStr + "&error=Please verify your email to add comments");
+            return;
+        }
         
         // Validation
         if (content == null || content.trim().isEmpty() || 

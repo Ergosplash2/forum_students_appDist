@@ -128,4 +128,8 @@ public class User {
         if (isProfessor()) return "Professor";
         return "User";
     }
+ // Add this method to your User class
+    public boolean canPostAndComment() {
+        return emailVerified;
+    }
 }

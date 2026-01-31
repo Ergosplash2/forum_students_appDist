@@ -24,6 +24,12 @@ public class AddPostServlet extends HttpServlet {
             return;
         }
         
+        model.User user = (model.User) session.getAttribute("user");
+        if (!user.isEmailVerified()) {
+            response.sendRedirect("profile?error=Please verify your email to create posts");
+            return;
+        }
+        
         // Get all available tags for the form
         PostDAO postDAO = new PostDAO();
         List<Tag> allTags = postDAO.getAllTags();
@@ -43,6 +49,13 @@ public class AddPostServlet extends HttpServlet {
         }
         
         model.User user = (model.User) session.getAttribute("user");
+        
+        if (!user.isEmailVerified()) {
+            response.sendRedirect("profile?error=Please verify your email to create posts");
+            return;
+        }
+        
+        
         String title = request.getParameter("title");
         String content = request.getParameter("content");
         String[] tagIds = request.getParameterValues("tags"); // Get selected tags
