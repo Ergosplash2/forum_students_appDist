@@ -173,6 +173,27 @@
             background-color: #e74c3c;
             color: white;
         }
+        .delete-comment-btn {
+    background: none;
+    border: 1px solid #e74c3c;
+    color: #e74c3c;
+    padding: 2px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.8em;
+    margin-left: 10px;
+}
+
+.delete-comment-btn:hover {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.comment-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
     </style>
 </head>
 <body>
@@ -218,28 +239,29 @@
             </c:if>
         </div>
         
-        <div class="comments-section">
-            <h2 class="comments-header">Comments (${post.commentCount})</h2>
-            
-            <c:choose>
-                <c:when test="${not empty comments}">
-                    <c:forEach items="${comments}" var="comment">
-                        <div class="comment">
-                            <div class="comment-meta">
-                                <strong>${comment.username}</strong> - ${comment.createdAt}
-                            </div>
-                            <div class="comment-content">
-                                ${comment.content}
-                            </div>
-                        </div>
-                    </c:forEach>
-                </c:when>
-                <c:otherwise>
-                    <div class="no-comments">
-                        No comments yet. Be the first to comment!
-                    </div>
-                </c:otherwise>
-            </c:choose>
+        <c:forEach items="${comments}" var="comment">
+    <div class="comment" id="comment-${comment.id}">
+        <div class="comment-meta">
+            <div>
+                <strong>${comment.username}</strong> - ${comment.createdAt}
+            </div>
+            <c:if test="${sessionScope.user.id == comment.userId}">
+                <form method="post" action="deleteComment" 
+                      onsubmit="return confirm('Delete this comment?')"
+                      style="display:inline; margin-left: 10px;">
+                    <input type="hidden" name="commentId" value="${comment.id}">
+                    <input type="hidden" name="postId" value="${post.id}">
+                    <button type="submit" class="delete-comment-btn">
+                        🗑️ 
+                    </button>
+                </form>
+            </c:if>
+        </div>
+        <div class="comment-content">
+            ${comment.content}
+        </div>
+    </div>
+</c:forEach>
             
             <c:choose>
     <c:when test="${sessionScope.user.emailVerified}">

@@ -52,4 +52,37 @@ public class CommentDAO {
         }
         return false;
     }
+ // In CommentDAO.java
+    public boolean deleteComment(int commentId, int userId) {
+        String sql = "DELETE FROM comments WHERE id = ? AND user_id = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, commentId);
+            ps.setInt(2, userId);
+            
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Optional: Add method to check ownership
+    public boolean isCommentOwner(int commentId, int userId) {
+        String sql = "SELECT 1 FROM comments WHERE id = ? AND user_id = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, commentId);
+            ps.setInt(2, userId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
