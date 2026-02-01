@@ -23,7 +23,7 @@ public class AuthFilter implements Filter {
         if (path.equals("/login") || path.equals("/register") || 
             path.equals("/verifyEmail") || path.equals("/resendVerification") ||
             path.equals("/") || path.equals("/index.html") ||
-            path.startsWith("/test")) {
+            path.startsWith("/test") || path.startsWith("/api/")) {
             chain.doFilter(request, response);
             return;
         }
